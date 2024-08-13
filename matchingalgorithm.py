@@ -49,7 +49,7 @@ class Algorithm:
             match_counts.append(group_match_counts)
         return match_counts
 
-    def fitness_function(self, solution: Dict[int, List[int]]):
+    def fitness_function(self, solution: Dict[int, List[int]]) -> int:
         score = 0
         for p_id, p_matches in solution.items():
             # R1 rekomendacja dla samego siebie
@@ -73,7 +73,7 @@ class Algorithm:
 
         return score
 
-    def convert_participants_to_map(self):
+    def convert_participants_to_map(self) :
         participants_map = {}
         for p in self.participants:
             participants_map[p.id] = {
@@ -94,13 +94,35 @@ class Algorithm:
         return self.solution
 
     def mutate(self, solution: Dict[int, List[int]]) -> Dict[int, List[int]]:
-        new_solution = {}
+        mutated_solution = solution.copy()
         all_ids = [p.id for p in self.participants]
 
-        for participant_id in solution.keys():
-            possible_recommendations = [pid for pid in all_ids]
-            new_solution[participant_id] = random.sample(
-                possible_recommendations, self.n_recommendations
-            )
+        # Wybór losowo uczestnika do mutacji
+        participant_to_mutate = random.choice(list(mutated_solution.keys()))
+        # Wybór losowo, ile rekomendacji zmienić (od 1 do 5)
+        num_changes = random.randint(1, self.n_recommendations)
+        # wybór losowego indeksu do zmiany
+        indices_to_change = random.sample(range(self.n_recommendations), num_changes)
 
-        return new_solution
+        for index in indices_to_change:
+            # wybór nowego uczestnika
+            new_recommendation = random.choice([id for id in all_ids if id not in mutated_solution[
+                participant_to_mutate] ])
+            mutated_solution[participant_to_mutate][index] = new_recommendation
+
+        return mutated_solution
+
+    # wersja funkcji w której losujemy wszystkich 5 rekomendownych id na raz dla wszystkich Partycypantów
+
+    # def mutate(self, solution: Dict[int, List[int]]) -> Dict[int, List[int]]:
+    #     new_solution = {}
+    #     all_ids = [p.id for p in self.participants]
+    #
+    #     for participant_id in solution.keys():
+    #         possible_recommendations = [pid for pid in all_ids]
+    #         new_solution[participant_id] = random.sample(
+    #             possible_recommendations, self.n_recommendations
+    #         )
+    #
+    #     return new_solution
+
