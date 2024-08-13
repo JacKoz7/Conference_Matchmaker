@@ -24,14 +24,17 @@ class Algorithm:
         attr_list = []
         for matches in solution.values():
             for i in matches:
-                attr_list.append(self.participant_map[i]['attributes'])
-        grouped_list = [attr_list[i:i + self.n_recommendations] for i in range(0, len(attr_list), self.n_recommendations)]
+                attr_list.append(self.participant_map[i]["attributes"])
+        grouped_list = [
+            attr_list[i : i + self.n_recommendations]
+            for i in range(0, len(attr_list), self.n_recommendations)
+        ]
         return grouped_list
 
     def give_desired_attributes(self, solution: Dict[int, List[int]]) -> List:
         des_list = []
         for id in solution.keys():
-            des_list.append(self.participant_map[id]['desired'])
+            des_list.append(self.participant_map[id]["desired"])
         return des_list
 
     def find_matches(self, solution: Dict[int, List[int]]) -> List:
@@ -45,7 +48,6 @@ class Algorithm:
                 group_match_counts.append(count)
             match_counts.append(group_match_counts)
         return match_counts
-
 
     def fitness_function(self, solution: Dict[int, List[int]]):
         score = 0
@@ -75,8 +77,8 @@ class Algorithm:
         participants_map = {}
         for p in self.participants:
             participants_map[p.id] = {
-                'attributes': p.attributes,
-                'desired': p.desired_attributes
+                "attributes": p.attributes,
+                "desired": p.desired_attributes,
             }
         return participants_map
 
@@ -84,11 +86,12 @@ class Algorithm:
         for i in range(0, generations):
             new_solution = self.mutate(self.solution)
 
-            if self.fitness_function(new_solution) > self.fitness_function(self.solution):
+            if self.fitness_function(new_solution) > self.fitness_function(
+                self.solution
+            ):
                 self.solution = new_solution
         print("score: ", self.fitness_function(self.solution), "\n")
         return self.solution
-
 
     def mutate(self, solution: Dict[int, List[int]]) -> Dict[int, List[int]]:
         new_solution = {}
@@ -96,7 +99,8 @@ class Algorithm:
 
         for participant_id in solution.keys():
             possible_recommendations = [pid for pid in all_ids]
-            new_solution[participant_id] = random.sample(possible_recommendations, self.n_recommendations)
+            new_solution[participant_id] = random.sample(
+                possible_recommendations, self.n_recommendations
+            )
 
         return new_solution
-

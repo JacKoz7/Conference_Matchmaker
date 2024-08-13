@@ -14,9 +14,3 @@ if __name__ == "__main__":
     best_matches = mainalgorithm.run(10000)
 
     print_outcome(mainalgorithm, best_matches)
-
-
-
-
-
-
