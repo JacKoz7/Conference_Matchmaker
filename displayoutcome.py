@@ -11,8 +11,8 @@ def print_outcome(algorithm, solution) -> None:
         )
     print()
 
-    for l in range(len(algorithm.find_matches(solution))):
-        print(f"Participant {l+1} matches: {algorithm.find_matches(solution)[l]}")
+    for k in range(len(algorithm.find_matches(solution))):
+        print(f"Participant {k+1} matches: {algorithm.find_matches(solution)[k]}")
     print()
 
     for i, p in enumerate(solution.values()):

@@ -32,10 +32,10 @@ class Algorithm:
         return grouped_list
 
     def give_desired_attributes(self, solution: Dict[int, List[int]]) -> List:
-        des_list = []
+        desired_list = []
         for id in solution.keys():
-            des_list.append(self.participant_map[id]["desired"])
-        return des_list
+            desired_list.append(self.participant_map[id]["desired"])
+        return desired_list
 
     def find_matches(self, solution: Dict[int, List[int]]) -> List:
         attributes = self.give_attributes(solution)
