@@ -73,7 +73,7 @@ class Algorithm:
 
         return score
 
-    def convert_participants_to_map(self) :
+    def convert_participants_to_map(self):
         participants_map = {}
         for p in self.participants:
             participants_map[p.id] = {
@@ -106,8 +106,13 @@ class Algorithm:
 
         for index in indices_to_change:
             # wybór nowego uczestnika
-            new_recommendation = random.choice([id for id in all_ids if id not in mutated_solution[
-                participant_to_mutate] ])
+            new_recommendation = random.choice(
+                [
+                    id
+                    for id in all_ids
+                    if id not in mutated_solution[participant_to_mutate]
+                ]
+            )
             mutated_solution[participant_to_mutate][index] = new_recommendation
 
         return mutated_solution
@@ -125,4 +130,3 @@ class Algorithm:
     #         )
     #
     #     return new_solution
-

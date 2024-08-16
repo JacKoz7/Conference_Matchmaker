@@ -1,9 +1,12 @@
+import sys
+
 from dataloader import load_from_file
 from matchingalgorithm import Algorithm
 from displayoutcome import print_outcome
 
-if __name__ == "__main__":
-    participants = load_from_file("inputdata.txt")
+
+def run(file):
+    participants = load_from_file(file)
 
     mainalgorithm = Algorithm(participants)
 
@@ -11,6 +14,11 @@ if __name__ == "__main__":
 
     mainalgorithm.mutate(sol)
 
-    best_matches = mainalgorithm.run(10000)
+    best_matches = mainalgorithm.run(100)
 
     print_outcome(mainalgorithm, best_matches)
+
+
+if __name__ == "__main__":
+    input_file = sys.argv[1]
+    run(input_file)
