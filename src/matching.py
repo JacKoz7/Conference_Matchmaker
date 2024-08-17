@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List
-from participantdata import Participant
+from participant import Participant
 
 
 class Algorithm:
@@ -84,17 +84,17 @@ class Algorithm:
 
     def run(self, generations: int) -> Dict[int, List[int]]:
         for i in range(0, generations):
-            new_solution = self.mutate(self.solution)
+            new_solution = self.mutate()
 
             if self.fitness_function(new_solution) > self.fitness_function(
                 self.solution
             ):
                 self.solution = new_solution
-        print("score: ", self.fitness_function(self.solution), "\n")
+            print("score: ", self.fitness_function(self.solution), "\n")
         return self.solution
 
-    def mutate(self, solution: Dict[int, List[int]]) -> Dict[int, List[int]]:
-        mutated_solution = solution.copy()
+    def mutate(self) -> Dict[int, List[int]]:
+        mutated_solution = self.solution.copy()
         all_ids = [p.id for p in self.participants]
 
         # Wybór losowo uczestnika do mutacji

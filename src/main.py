@@ -1,24 +1,20 @@
 import sys
 
 from dataloader import load_from_file
-from matchingalgorithm import Algorithm
-from displayoutcome import print_outcome
+from matching import Algorithm
+from resultprinter import print_solution
 
 
-def run(file):
+def run(file: str, iterations: int = 100):
     participants = load_from_file(file)
 
-    mainalgorithm = Algorithm(participants)
+    alg = Algorithm(participants)
 
-    sol = mainalgorithm.random_solution()
+    final_solution = alg.run(iterations)
 
-    mainalgorithm.mutate(sol)
-
-    best_matches = mainalgorithm.run(100)
-
-    print_outcome(mainalgorithm, best_matches)
+    print_solution(alg, final_solution)
 
 
 if __name__ == "__main__":
-    input_file = sys.argv[1]
-    run(input_file)
+    file = sys.argv[1]
+    run(file)
