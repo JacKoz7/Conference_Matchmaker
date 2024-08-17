@@ -9,7 +9,7 @@ def print_solution(participants, solution) -> None:
 
     for ids in range(len(algorithm.return_participants_attributes(solution))):
         print(
-            f"Attributes of participants matched for Participant {ids+1}: {algorithm.return_participants_attributes(solution)[ids]}"
+            f"Attributes of participants matched with Participant {ids+1}: {algorithm.return_participants_attributes(solution)[ids]}"
         )
     print()
 

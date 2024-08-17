@@ -51,19 +51,38 @@ class Algorithm:
 
     def fitness_function(self, solution: Dict[int, List[int]]) -> int:
         score = 0
+
+        # R1: Rekomendacja dla samego siebie
         for p_id, p_matches in solution.items():
-            # R1 rekomendacja dla samego siebie
             if p_id in p_matches:
                 score -= 100
 
-        for i in range(len(self.find_matches(solution))):
-            # R2 Brak dopasowań wśród 5 osób
-            if sum(self.find_matches(solution)[i]) == 0:
+        # Wykonujemy znalezienie dopasowań tylko raz i zapisujemy
+        match_results = self.find_matches(solution)
+
+        # R2: Brak dopasowań wśród 5 osób
+        for match_count in match_results:
+            if sum(match_count) == 0:
                 score -= 300
-            # R3 za każde dopasowanie score = ilość dopasowań razy 100
-            for j in range(len(self.find_matches(solution)[i])):
-                match_count = self.find_matches(solution)[i][j]
-                score += match_count * 100
+
+        # R3: Za każde dopasowanie
+        for match_count in match_results:
+            for count in match_count:
+                score += count * 100
+
+        # R4: Różnorodność preferencji (bonus za zróżnicowane spełnione preferencje)
+        for p_id, p_matches in solution.items():
+            desired_attrs = set(self.participant_map[p_id]["desired"])
+            matched_attrs = set()
+            for match in p_matches:
+                matched_attrs.update(self.participant_map[match]["attributes"])
+            if matched_attrs & desired_attrs:
+                score += 200
+
+        # R5: Zgodność z rekomendacjami (bonus za pełne dopasowanie)
+        for p_id, p_matches in solution.items():
+            if all(match in self.participant_map[p_id]["desired"] for match in p_matches):
+                score += 500  # bonus za idealne dopasowanie
         return score
 
     def convert_participants_to_map(self):
@@ -83,7 +102,7 @@ class Algorithm:
                 self.solution
             ):
                 self.solution = new_solution
-            print("score: ", self.fitness_function(self.solution))
+            print(f" score: {self.fitness_function(self.solution)} iteration {i}")
         return self.solution
 
     def mutate(self) -> Dict[int, List[int]]:
@@ -92,23 +111,22 @@ class Algorithm:
 
         # Wybór losowo uczestnika do mutacji
         participant_to_mutate = random.choice(list(mutated_solution.keys()))
-        # Wybór losowo, ile rekomendacji zmienić (od 1 do 5)
-        num_changes = random.randint(1, self.n_recommendations)
-        # wybór losowego indeksu do zmiany
-        indices_to_change = random.sample(range(self.n_recommendations), num_changes)
 
-        for index in indices_to_change:
-            # wybór nowego uczestnika
-            new_recommendation = random.choice(
-                [
-                    id
-                    for id in all_ids
-                    if id not in mutated_solution[participant_to_mutate]
-                ]
-            )
-            mutated_solution[participant_to_mutate][index] = new_recommendation
+        # Wybór losowego indeksu do zmiany
+        index_to_change = random.randint(0, self.n_recommendations - 1)
+
+        # Wybór nowego uczestnika, który nie jest już obecny w rekomendacjach
+        current_recommendations = set(mutated_solution[participant_to_mutate])
+        new_recommendation = random.choice(
+            [id for id in all_ids if id not in current_recommendations]
+        )
+
+        # Zmiana wybranej rekomendacji
+        mutated_solution[participant_to_mutate][index_to_change] = new_recommendation
 
         return mutated_solution
+
+
 
     # wersja funkcji w której losujemy wszystkich 5 rekomendownych id na raz dla wszystkich Partycypantów
 
