@@ -17,17 +17,16 @@ The matching algorithm employs a genetic algorithm approach:
 
 This method aims to maximize meaningful connections among conference participants based on their attributes and preferences.
 
-
-1. Installing project dependencies 
+- Installing project dependencies 
 ```
 pip install -r requirements.txt
 ```
-2. Running external scripts (ruff)
+- Running external scripts (ruff)
 ```
 ruff check 
 ruff format
 ```
-3. Example program execution
+- Example program execution
 ```
 python src\main.py data\inputdata.txt
 ```
