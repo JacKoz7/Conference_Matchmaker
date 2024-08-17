@@ -1,13 +1,15 @@
-def print_solution(algorithm, solution) -> None:
-    for ids in range(len(algorithm.give_desired_attributes(solution))):
+from matching import Algorithm
+def print_solution(participants, solution) -> None:
+    algorithm = Algorithm(participants)
+    for ids in range(len(algorithm.return_recommended_desired_attributes(solution))):
         print(
-            f"Participant {ids+1} desired attributes: {algorithm.give_desired_attributes(solution)[ids]}"
+            f"Participant {ids+1} desired attributes: {algorithm.return_recommended_desired_attributes(solution)[ids]}"
         )
     print()
 
-    for ids in range(len(algorithm.give_attributes(solution))):
+    for ids in range(len(algorithm.return_participants_attributes(solution))):
         print(
-            f"Attributes of participants matched for Participant {ids+1}: {algorithm.give_attributes(solution)[ids]}"
+            f"Attributes of participants matched for Participant {ids+1}: {algorithm.return_participants_attributes(solution)[ids]}"
         )
     print()
 

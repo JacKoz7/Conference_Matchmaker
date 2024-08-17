@@ -5,14 +5,14 @@ from matching import Algorithm
 from resultprinter import print_solution
 
 
-def run(file: str, iterations: int = 100):
-    participants = load_from_file(file)
+def run(input_file: str, iterations: int = 100):
+    participants = load_from_file(input_file)
 
     alg = Algorithm(participants)
 
     final_solution = alg.run(iterations)
 
-    print_solution(alg, final_solution)
+    print_solution(participants, final_solution)
 
 
 if __name__ == "__main__":

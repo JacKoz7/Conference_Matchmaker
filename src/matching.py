@@ -20,26 +20,26 @@ class Algorithm:
 
         return solution
 
-    def give_attributes(self, solution: Dict[int, List[int]]) -> List:
+    def return_participants_attributes(self, solution: Dict[int, List[int]]) -> List:
         attr_list = []
         for matches in solution.values():
             for i in matches:
                 attr_list.append(self.participant_map[i]["attributes"])
         grouped_list = [
-            attr_list[i : i + self.n_recommendations]
+            attr_list[i: i + self.n_recommendations]
             for i in range(0, len(attr_list), self.n_recommendations)
         ]
         return grouped_list
 
-    def give_desired_attributes(self, solution: Dict[int, List[int]]) -> List:
+    def return_recommended_desired_attributes(self, solution: Dict[int, List[int]]) -> List:
         desired_list = []
         for id in solution.keys():
             desired_list.append(self.participant_map[id]["desired"])
         return desired_list
 
     def find_matches(self, solution: Dict[int, List[int]]) -> List:
-        attributes = self.give_attributes(solution)
-        desired_attributes = self.give_desired_attributes(solution)
+        attributes = self.return_participants_attributes(solution)
+        desired_attributes = self.return_recommended_desired_attributes(solution)
         match_counts = []
         for attr_group, desired_attr_group in zip(attributes, desired_attributes):
             group_match_counts = []
@@ -60,17 +60,10 @@ class Algorithm:
             # R2 Brak dopasowań wśród 5 osób
             if sum(self.find_matches(solution)[i]) == 0:
                 score -= 300
+            # R3 za każde dopasowanie score = ilość dopasowań razy 100
             for j in range(len(self.find_matches(solution)[i])):
-                # R3 dopasowanie jednej cechy
-                if self.find_matches(solution)[i][j] == 1:
-                    score += 100
-                # R4 dopasowanie dwóch cech
-                if self.find_matches(solution)[i][j] == 2:
-                    score += 200
-                # R5 dopasowanie trzech lub więcej cech
-                if self.find_matches(solution)[i][j] >= 3:
-                    score += 300
-
+                match_count = self.find_matches(solution)[i][j]
+                score += match_count * 100
         return score
 
     def convert_participants_to_map(self):
@@ -90,7 +83,7 @@ class Algorithm:
                 self.solution
             ):
                 self.solution = new_solution
-            print("score: ", self.fitness_function(self.solution), "\n")
+            print("score: ", self.fitness_function(self.solution))
         return self.solution
 
     def mutate(self) -> Dict[int, List[int]]:
