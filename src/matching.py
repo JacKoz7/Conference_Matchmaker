@@ -77,12 +77,8 @@ class Algorithm:
             for match in p_matches:
                 matched_attrs.update(self.participant_map[match]["attributes"])
             if matched_attrs & desired_attrs:
-                score += 200
+                score += 50
 
-        # R5: Zgodność z rekomendacjami (bonus za pełne dopasowanie)
-        for p_id, p_matches in solution.items():
-            if all(match in self.participant_map[p_id]["desired"] for match in p_matches):
-                score += 500  # bonus za idealne dopasowanie
         return score
 
     def convert_participants_to_map(self):
@@ -126,18 +122,3 @@ class Algorithm:
 
         return mutated_solution
 
-
-
-    # wersja funkcji w której losujemy wszystkich 5 rekomendownych id na raz dla wszystkich Partycypantów
-
-    # def mutate(self, solution: Dict[int, List[int]]) -> Dict[int, List[int]]:
-    #     new_solution = {}
-    #     all_ids = [p.id for p in self.participants]
-    #
-    #     for participant_id in solution.keys():
-    #         possible_recommendations = [pid for pid in all_ids]
-    #         new_solution[participant_id] = random.sample(
-    #             possible_recommendations, self.n_recommendations
-    #         )
-    #
-    #     return new_solution
