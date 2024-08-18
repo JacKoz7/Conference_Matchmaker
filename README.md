@@ -28,5 +28,5 @@ ruff format
 ```
 - Example program execution
 ```
-python src\main.py data\inputdata.txt
+python src\main.py data\input.txt
 ```
