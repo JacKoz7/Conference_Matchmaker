@@ -91,15 +91,32 @@ class Algorithm:
         return participants_map
 
     def run(self, generations: int) -> Dict[int, List[int]]:
-        for i in range(0, generations):
-            new_solution = self.mutate()
+        best_solution = self.solution
+        best_score = self.fitness_function(best_solution)
+        iterations_without_improvement = 0
+        max_iterations_without_improvement = generations * 0.5  # 50% iteracji
 
-            if self.fitness_function(new_solution) > self.fitness_function(
-                self.solution
-            ):
+        for i in range(generations):
+            new_solution = self.mutate()
+            new_score = self.fitness_function(new_solution)
+
+            if new_score > best_score:
+                best_solution = new_solution
+                best_score = new_score
                 self.solution = new_solution
-            print(f" score: {self.fitness_function(self.solution)} iteration {i}")
-        return self.solution
+                iterations_without_improvement = 0
+            else:
+                iterations_without_improvement += 1
+
+            print(f" score: {best_score} iteration {i}")
+
+            # jeśli przez 50% wszystkich iteracji score będzie ciągle taki sam to zakończ działanie
+            if iterations_without_improvement >= max_iterations_without_improvement:
+                print(f"\nNo improvement for {max_iterations_without_improvement} (50%) iterations. Stopping.")
+                break
+
+        print(f"\nFinal result: {best_score}\n")
+        return best_solution
 
     def mutate(self) -> Dict[int, List[int]]:
         mutated_solution = self.solution.copy()
@@ -111,12 +128,11 @@ class Algorithm:
         # Wybór losowego indeksu do zmiany
         index_to_change = random.randint(0, self.n_recommendations - 1)
 
-        # Wybór nowego uczestnika, który nie jest już obecny w rekomendacjach
+        # Wybór nowego uczestnika
         current_recommendations = set(mutated_solution[participant_to_mutate])
         new_recommendation = random.choice(
             [id for id in all_ids if id not in current_recommendations]
         )
-
         # Zmiana wybranej rekomendacji
         mutated_solution[participant_to_mutate][index_to_change] = new_recommendation
 
