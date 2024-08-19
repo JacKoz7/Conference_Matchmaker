@@ -5,7 +5,7 @@ from matching import Algorithm
 from resultprinter import print_solution
 
 
-def run(input_file: str, iterations: int = 100000):
+def run(input_file: str, iterations: int = 100000) -> None:
     participants = load_from_file(input_file)
 
     alg = Algorithm(participants)

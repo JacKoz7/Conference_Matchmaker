@@ -65,7 +65,7 @@ class Algorithm:
             if sum(match_count) == 0:
                 score -= 300
 
-        # R3: Za każde dopasowanie
+        # R3: Za każde dopasowanie 100 pkt
         for match_count in match_results:
             for count in match_count:
                 score += count * 100
@@ -110,7 +110,7 @@ class Algorithm:
 
             print(f" score: {best_score} iteration {i}")
 
-            # jeśli przez 50% wszystkich iteracji score będzie ciągle taki sam to zakończ działanie
+            # jeśli przez 50% wszystkich iteracji score będzie ciągle taki sam (nie będzie poprawy) to zakończ działanie
             if iterations_without_improvement >= max_iterations_without_improvement:
                 print(f"\nNo improvement for {max_iterations_without_improvement} (50%) iterations. Stopping.")
                 break
