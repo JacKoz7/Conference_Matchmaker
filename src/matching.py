@@ -1,22 +1,22 @@
 import random
 from typing import Dict, List
-from src.participant import Participant
 
 
 class Algorithm:
-    def __init__(self, participants: list[Participant], n_recommendations: int):
-        self.participants = participants
-        self.participant_map = self.convert_participants_to_map()
+    def __init__(
+            self, participant_map: Dict[int, Dict[str, List[str]]], n_recommendations: int
+    ):
+        self.participant_map = participant_map
         self.n_recommendations = n_recommendations
         self.solution = self.random_solution()
 
     def random_solution(self) -> Dict[int, List[int]]:
-        all_ids = [p.id for p in self.participants]
+        all_ids = list(self.participant_map.keys())
         random.shuffle(all_ids)
 
         solution = {}
-        for p in self.participants:
-            solution[p.id] = random.sample(all_ids, self.n_recommendations)
+        for p_id in self.participant_map:
+            solution[p_id] = random.sample(all_ids, self.n_recommendations)
 
         return solution
 
@@ -26,18 +26,15 @@ class Algorithm:
             for i in matches:
                 attr_list.append(self.participant_map[i]["attributes"])
         grouped_list = [
-            attr_list[i : i + self.n_recommendations]
+            attr_list[i: i + self.n_recommendations]
             for i in range(0, len(attr_list), self.n_recommendations)
         ]
         return grouped_list
 
     def return_recommended_desired_attributes(
-        self, solution: Dict[int, List[int]]
+            self, solution: Dict[int, List[int]]
     ) -> List:
-        desired_list = []
-        for id in solution.keys():
-            desired_list.append(self.participant_map[id]["desired"])
-        return desired_list
+        return [self.participant_map[id]["desired"] for id in solution.keys()]
 
     def find_matches(self, solution: Dict[int, List[int]]) -> List:
         attributes = self.return_participants_attributes(solution)
@@ -83,15 +80,6 @@ class Algorithm:
 
         return score
 
-    def convert_participants_to_map(self):
-        participants_map = {}
-        for p in self.participants:
-            participants_map[p.id] = {
-                "attributes": p.attributes,
-                "desired": p.desired_attributes,
-            }
-        return participants_map
-
     def run(self, generations: int) -> Dict[int, List[int]]:
         best_solution = self.solution
         best_score = self.fitness_function(best_solution)
@@ -125,7 +113,7 @@ class Algorithm:
 
     def mutate(self) -> Dict[int, List[int]]:
         mutated_solution = self.solution.copy()
-        all_ids = [p.id for p in self.participants]
+        all_ids = list(self.participant_map.keys())
 
         # Wybór losowo uczestnika do mutacji
         participant_to_mutate = random.choice(list(mutated_solution.keys()))
