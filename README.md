@@ -30,7 +30,7 @@ Each line represents a single participant.
 The fields are separated by a tab character (\t). 
 
 Example Format:
-```commandline
+```
 1    DEVELOPER    INVESTOR,DEVELOPER
 2    INVESTOR     SALES,MARKETING
 3    DEVELOPER    DEVELOPER,ARCHITECT
