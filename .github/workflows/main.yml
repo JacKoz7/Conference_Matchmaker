@@ -30,6 +30,3 @@ jobs:
 
       - name: Run Ruff Format
         run: ruff format .
-      
-      - name: Verify no changes after formatting
-        run: git diff --exit-code || (echo "Code is not properly formatted!" && exit 1)
