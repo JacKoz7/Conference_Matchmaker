@@ -1,4 +1,5 @@
 import sys
+import click
 
 from src.dataloader import load_from_file
 from src.matching import Algorithm
