@@ -1,5 +1,6 @@
 import random
 from typing import Dict, List
+from collections import deque
 
 
 class Algorithm:
@@ -80,11 +81,10 @@ class Algorithm:
 
         return score
 
-    def run(self, generations: int) -> Dict[int, List[int]]:
+    def run(self, generations: int, max_iterations_without_improvement: int) -> Dict[int, List[int]]:
         best_solution = self.solution
         best_score = self.fitness_function(best_solution)
-        iterations_without_improvement = 0
-        max_iterations_without_improvement = generations * 0.5  # 50% iteracji
+        last_scores = deque(maxlen=max_iterations_without_improvement)
 
         for i in range(generations):
             new_solution = self.mutate()
@@ -94,18 +94,15 @@ class Algorithm:
                 best_solution = new_solution
                 best_score = new_score
                 self.solution = new_solution
-                iterations_without_improvement = 0
-            else:
-                iterations_without_improvement += 1
 
-            if i % 50 == 0:  # wyświeta wynik co 50 iteracji
+            last_scores.append(best_score)
+
+            if i % 50 == 0:  # wyświetla wynik co 50 iteracji
                 print(f" score: {best_score} iteration {i}")
 
-            # jeśli przez 50% wszystkich iteracji score będzie ciągle taki sam (nie będzie poprawy) to zakończ działanie
-            if iterations_without_improvement >= max_iterations_without_improvement:
-                print(
-                    f"\nNo improvement for {max_iterations_without_improvement} (50%) iterations. Stopping."
-                )
+            # Sprawdza, czy wszystkie wyniki w deque są takie same
+            if len(last_scores) == max_iterations_without_improvement and len(set(last_scores)) == 1:
+                print(f"\nNo improvement for the last {max_iterations_without_improvement} iterations. Stopping.")
                 break
 
         print(f"\nFinal result: {best_score}\n")
