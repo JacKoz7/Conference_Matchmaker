@@ -1,6 +1,6 @@
 import random
 from typing import Dict, List
-from participant import Participant
+from src.participant import Participant
 
 
 class Algorithm:
@@ -26,12 +26,14 @@ class Algorithm:
             for i in matches:
                 attr_list.append(self.participant_map[i]["attributes"])
         grouped_list = [
-            attr_list[i: i + self.n_recommendations]
+            attr_list[i : i + self.n_recommendations]
             for i in range(0, len(attr_list), self.n_recommendations)
         ]
         return grouped_list
 
-    def return_recommended_desired_attributes(self, solution: Dict[int, List[int]]) -> List:
+    def return_recommended_desired_attributes(
+        self, solution: Dict[int, List[int]]
+    ) -> List:
         desired_list = []
         for id in solution.keys():
             desired_list.append(self.participant_map[id]["desired"])
@@ -81,7 +83,7 @@ class Algorithm:
 
         return score
 
-    def convert_participants_to_map(self) :
+    def convert_participants_to_map(self):
         participants_map = {}
         for p in self.participants:
             participants_map[p.id] = {
@@ -108,11 +110,14 @@ class Algorithm:
             else:
                 iterations_without_improvement += 1
 
-            print(f" score: {best_score} iteration {i}")
+            if i % 50 == 0: # wyświeta wynik co 50 iteracji
+                print(f" score: {best_score} iteration {i}")
 
             # jeśli przez 50% wszystkich iteracji score będzie ciągle taki sam (nie będzie poprawy) to zakończ działanie
             if iterations_without_improvement >= max_iterations_without_improvement:
-                print(f"\nNo improvement for {max_iterations_without_improvement} (50%) iterations. Stopping.")
+                print(
+                    f"\nNo improvement for {max_iterations_without_improvement} (50%) iterations. Stopping."
+                )
                 break
 
         print(f"\nFinal result: {best_score}\n")
@@ -137,4 +142,3 @@ class Algorithm:
         mutated_solution[participant_to_mutate][index_to_change] = new_recommendation
 
         return mutated_solution
-

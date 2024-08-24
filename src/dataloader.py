@@ -1,5 +1,5 @@
 from typing import List
-from participant import Participant
+from src.participant import Participant
 
 
 def load_from_file(input_file: str) -> List[Participant]:
