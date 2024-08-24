@@ -4,7 +4,7 @@ from src.participant import Participant
 
 
 class Algorithm:
-    def __init__(self, participants: list[Participant], n_recommendations: int = 5):
+    def __init__(self, participants: list[Participant], n_recommendations: int):
         self.participants = participants
         self.participant_map = self.convert_participants_to_map()
         self.n_recommendations = n_recommendations
@@ -110,7 +110,7 @@ class Algorithm:
             else:
                 iterations_without_improvement += 1
 
-            if i % 50 == 0: # wyświeta wynik co 50 iteracji
+            if i % 50 == 0:  # wyświeta wynik co 50 iteracji
                 print(f" score: {best_score} iteration {i}")
 
             # jeśli przez 50% wszystkich iteracji score będzie ciągle taki sam (nie będzie poprawy) to zakończ działanie
