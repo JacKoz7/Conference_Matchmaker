@@ -81,7 +81,7 @@ class Algorithm:
 
         return score
 
-    def convert_participants_to_map(self):
+    def convert_participants_to_map(self) :
         participants_map = {}
         for p in self.participants:
             participants_map[p.id] = {

@@ -17,6 +17,28 @@ The matching algorithm employs a genetic algorithm approach:
 
 This method aims to maximize meaningful connections among conference participants based on their attributes and preferences.
 
+## Input file
+
+The input file provided to the algorithm contains a list of 
+participants, each described by their unique ID, their possessed attributes, and the attributes they are seeking. The format of the file is as follows:
+
+Each line represents a single participant.
+- The line begins with a unique numerical ID.
+- This is followed by the attributes the participant possesses.
+- Finally, the attributes the participant is seeking are listed.
+
+The fields are separated by a tab character (\t). 
+
+Example Format:
+```commandline
+1    DEVELOPER    INVESTOR,DEVELOPER
+2    INVESTOR     SALES,MARKETING
+3    DEVELOPER    DEVELOPER,ARCHITECT
+...
+```
+
+
+
 - Installing project dependencies 
 ```
 pip install -r requirements.txt

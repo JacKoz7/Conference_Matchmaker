@@ -16,5 +16,5 @@ def run(input_file: str, iterations: int = 100000) -> None:
 
 
 if __name__ == "__main__":
-    file = sys.argv[1]
+    file: str = sys.argv[1]
     run(file)
