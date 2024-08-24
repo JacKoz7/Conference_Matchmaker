@@ -39,16 +39,16 @@ Example Format:
 
 
 
-- Installing project dependencies 
+### Installing project dependencies 
 ```
 pip install -r requirements.txt
 ```
-- Running external scripts (ruff)
+### Running external scripts (ruff)
 ```
 ruff check 
 ruff format
 ```
-- Example program execution
+### Example program execution
 ```
 python src\main.py data\input.txt
 ```
