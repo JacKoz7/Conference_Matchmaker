@@ -24,7 +24,7 @@ def run(input_file: str, iterations: int, recommendations: int, noimprovement: i
 
     if recommendations < 1 or recommendations > 10:
         raise click.BadParameter(
-            f"Recommendations must be between 1 and 10. " f"Got {recommendations}."
+            f"Recommendations must be between 1 and 10. Got {recommendations}."
         )
     if noimprovement < 1 or noimprovement > iterations:
         raise click.BadParameter(

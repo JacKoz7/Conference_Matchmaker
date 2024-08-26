@@ -8,7 +8,7 @@ The system analyzes the attributes and preferences of conference participants to
 
 ## Algorithm
 
-The matching algorithm employs a genetic algorithm approach:
+The matching algorithm employs an evolutionary algorithm approach:
 
 1. Generates random initial recommendations for each participant.
 2. Evaluates solutions using a fitness function that rewards good matches and penalizes poor ones.
