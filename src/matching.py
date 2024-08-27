@@ -5,7 +5,7 @@ from collections import deque
 
 class Algorithm:
     def __init__(
-            self, participant_map: Dict[int, Dict[str, List[str]]], n_recommendations: int
+        self, participant_map: Dict[int, Dict[str, List[str]]], n_recommendations: int
     ):
         self.participant_map = participant_map
         self.n_recommendations = n_recommendations
@@ -27,61 +27,76 @@ class Algorithm:
             for i in matches:
                 attr_list.append(self.participant_map[i]["attributes"])
         grouped_list = [
-            attr_list[i: i + self.n_recommendations]
+            attr_list[i : i + self.n_recommendations]
             for i in range(0, len(attr_list), self.n_recommendations)
         ]
         return grouped_list
 
     def return_recommended_desired_attributes(
-            self, solution: Dict[int, List[int]]
+        self, solution: Dict[int, List[int]]
     ) -> List:
         return [self.participant_map[id]["desired"] for id in solution.keys()]
 
-    def find_matches(self, solution: Dict[int, List[int]]) -> List:
-        attributes = self.return_participants_attributes(solution)
-        desired_attributes = self.return_recommended_desired_attributes(solution)
-        match_counts = []
-        for attr_group, desired_attr_group in zip(attributes, desired_attributes):
-            group_match_counts = []
-            for attr_list in attr_group:
-                count = sum(1 for attr in attr_list if attr in desired_attr_group)
-                group_match_counts.append(count)
-            match_counts.append(group_match_counts)
-        return match_counts
+    def fitness_function(self, solution: Dict[int, List[int]]) -> float:
+        """
+        Calculate the fitness score for a given solution.
 
-    def fitness_function(self, solution: Dict[int, List[int]]) -> int:
-        score = 0
+        This function evaluates the quality of matches for each participant in the solution.
+        It considers various factors to determine the overall fitness:
 
-        # R1: Rekomendacja dla samego siebie
+        1. Match quality: How well the attributes of matched participants align with desired attributes.
+        2. Early good matches: Bonus for good matches appearing earlier in the recommendation list.
+        3. Self-recommendation penalty: Penalizes solutions where a participant is recommended to themselves.
+        4. No matches penalty: Penalizes when a participant has no matching attributes with their recommendations.
+        5. Attribute diversity bonus: Rewards solutions that provide diverse attribute matches.
+
+        Args:
+            solution (Dict[int, List[int]]): A dictionary where keys are participant IDs and values are lists of recommended participant IDs.
+
+        Returns:
+            float: The normalized fitness score for the given solution.
+        """
+        score = 0.0
+
         for p_id, p_matches in solution.items():
-            if p_id in p_matches:
-                score -= 100
-
-        # Wykonujemy znalezienie dopasowań tylko raz i zapisujemy
-        match_results = self.find_matches(solution)
-
-        # R2: Brak dopasowań wśród 5 osób
-        for match_count in match_results:
-            if sum(match_count) == 0:
-                score -= 300
-
-        # R3: Za każde dopasowanie 100 pkt
-        for match_count in match_results:
-            for count in match_count:
-                score += count * 100
-
-        # R4: Różnorodność preferencji (bonus za zróżnicowane spełnione preferencje)
-        for p_id, p_matches in solution.items():
+            participant_score = 0.0
             desired_attrs = set(self.participant_map[p_id]["desired"])
+
+            # Penalty for self-recommendation
+            if p_id in p_matches:
+                participant_score -= 1.0
+
             matched_attrs = set()
-            for match in p_matches:
-                matched_attrs.update(self.participant_map[match]["attributes"])
-            if matched_attrs & desired_attrs:
-                score += 50
+            for i, match in enumerate(p_matches):
+                match_attrs = set(self.participant_map[match]["attributes"])
+                matched_attrs.update(match_attrs)
 
-        return score
+                # Score based on match quality
+                attr_match_count = len(match_attrs & desired_attrs)
+                participant_score += attr_match_count / len(desired_attrs)
 
-    def run(self, generations: int, max_iterations_without_improvement: int) -> Dict[int, List[int]]:
+                # Bonus for early good matches
+                participant_score += attr_match_count / ((i + 1) * len(desired_attrs))
+
+            # Penalty for no matches
+            if len(matched_attrs & desired_attrs) == 0:
+                participant_score -= 2.0
+
+            # Bonus for attribute diversity
+            diversity_score = len(matched_attrs & desired_attrs) / len(desired_attrs)
+            participant_score += diversity_score
+
+            score += participant_score
+
+        # Normalize score by number of participants
+        return score / len(solution)
+
+    def run(
+        self,
+        generations: int,
+        max_iterations_without_improvement: int,
+        log_interval: int = 100,
+    ) -> Dict[int, List[int]]:
         best_solution = self.solution
         best_score = self.fitness_function(best_solution)
         last_scores = deque(maxlen=max_iterations_without_improvement)
@@ -97,15 +112,18 @@ class Algorithm:
 
             last_scores.append(best_score)
 
-            if i % 50 == 0:  # wyświetla wynik co 50 iteracji
-                print(f" score: {best_score} iteration {i}")
+            if i % log_interval == 0:
+                print(f"iteration: {i:5d}\tscore: {best_score:.3f}")
 
-            # Sprawdza, czy wszystkie wyniki w deque są takie same
-            if len(last_scores) == max_iterations_without_improvement and len(set(last_scores)) == 1:
-                print(f"\nNo improvement for the last {max_iterations_without_improvement} iterations. Stopping.")
+            if (
+                len(last_scores) == max_iterations_without_improvement
+                and len(set(last_scores)) == 1
+            ):
+                print(
+                    f"\n(no improvement for the last {max_iterations_without_improvement} iterations. stopping)\n"
+                )
                 break
 
-        print(f"\nFinal result: {best_score}\n")
         return best_solution
 
     def mutate(self) -> Dict[int, List[int]]:
