@@ -12,13 +12,21 @@ from src.resultprinter import print_solution
 )
 @click.option(
     "--recommendations",
+    "-r",
     default=5,
-    help="Number of recommendations",
+    help="How many recommendations each participant should receive",
     type=int,
 )
-@click.option("--noimprovement", default=10_000,
-              help="Number of consecutive iterations without score improvement before the algorithm stops", type=int)
-def run(input_file: str, iterations: int, recommendations: int, noimprovement: int) -> None:
+@click.option(
+    "--noimprovement",
+    "-ni",
+    default=1000,
+    help="Number of consecutive iterations without score improvement before the algorithm stops",
+    type=int,
+)
+def run(
+    input_file: str, iterations: int, recommendations: int, noimprovement: int
+) -> None:
     if iterations < 1000:
         raise click.BadParameter(f"Iterations must be at least 1000. Got {iterations}.")
 
@@ -31,7 +39,6 @@ def run(input_file: str, iterations: int, recommendations: int, noimprovement: i
             f"No improvement iterations must be between 0 and the total number of iterations. "
             f"Got {noimprovement}, while total iterations are {iterations}."
         )
-
 
     participants = load_from_file(input_file)
 
