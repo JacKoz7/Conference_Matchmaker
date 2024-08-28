@@ -81,7 +81,6 @@ class Algorithm:
             # Penalty for no matches
             if len(matched_attrs & desired_attrs) == 0:
                 participant_score -= 2.0
-
             # Bonus for attribute diversity
             diversity_score = len(matched_attrs & desired_attrs) / len(desired_attrs)
             participant_score += diversity_score
