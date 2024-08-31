@@ -25,7 +25,6 @@ Options:
 $ python3 main.py -i 1000 -r 5 -ni 500 data/input.tsv
 ```
 ![ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/4b36198a-e79a-4b12-bca2-bc18216041fd)
-
 ## How it works
 The matching algorithm employs an evolutionary algorithm approach:
 

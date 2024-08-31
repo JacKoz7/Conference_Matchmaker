@@ -1,6 +1,6 @@
 import click
 
-from src.dataloader import load_from_file
+from src.dataloader import Dataloader
 from src.matching import Algorithm
 from src.resultprinter import print_solution
 
@@ -27,12 +27,15 @@ from src.resultprinter import print_solution
 def run(
     input_file: str, iterations: int, recommendations: int, noimprovement: int
 ) -> None:
+    data = Dataloader(input_file)
+
     if iterations < 1000:
         raise click.BadParameter(f"Iterations must be at least 1000. Got {iterations}.")
 
-    if recommendations < 1 or recommendations > 10:
+    all_particpants = data.count_participants()
+    if recommendations < 1 or recommendations > all_particpants - 1:
         raise click.BadParameter(
-            f"Recommendations must be between 1 and 10. Got {recommendations}."
+            f"Recommendations must be between 1 and the maxium number of participants minus 1 ({all_particpants - 1}). Got {recommendations}."
         )
     if noimprovement < 1 or noimprovement > iterations:
         raise click.BadParameter(
@@ -40,7 +43,7 @@ def run(
             f"Got {noimprovement}, while total iterations are {iterations}."
         )
 
-    participants = load_from_file(input_file)
+    participants = data.load_from_file()
 
     alg = Algorithm(participants, recommendations)
 
