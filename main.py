@@ -33,9 +33,10 @@ def run(
         raise click.BadParameter(f"Iterations must be at least 1000. Got {iterations}.")
 
     all_particpants = data.count_participants()
-    if recommendations < 1 or recommendations > all_particpants - 1:
+    if recommendations < 1 or recommendations > all_particpants - 2:
         raise click.BadParameter(
-            f"Recommendations must be between 1 and the maxium number of participants minus 1 ({all_particpants - 1}). Got {recommendations}."
+            f"Recommendations must be between 1 and the maxium number of participants minus 2 ({all_particpants - 2}). "
+            f"Got {recommendations}."
         )
     if noimprovement < 1 or noimprovement > iterations:
         raise click.BadParameter(

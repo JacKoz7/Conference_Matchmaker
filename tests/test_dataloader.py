@@ -8,7 +8,7 @@ import os
 def temp_file_factory():
     temp_files = []
 
-    def create_temp_file(content=""):
+    def create_temp_file(content: str = ""):
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
             temp_file.write(content)
             temp_files.append(temp_file.name)
@@ -22,11 +22,11 @@ def temp_file_factory():
 
 
 @pytest.fixture
-def sample_data():
+def sample_data() -> str:
     return "1\tattr1,attr2\tdesired1,desired2\n2\tattr3,attr4\tdesired3,desired4\n"
 
 
-def test_load_from_file(temp_file_factory, sample_data):
+def test_load_from_file(temp_file_factory, sample_data) -> None:
     temp_filename = temp_file_factory(sample_data)
     data = Dataloader(temp_filename)
     result = data.load_from_file()
@@ -38,21 +38,21 @@ def test_load_from_file(temp_file_factory, sample_data):
     assert result == expected
 
 
-def test_load_from_file_empty(temp_file_factory):
+def test_load_from_file_empty(temp_file_factory) -> None:
     temp_filename = temp_file_factory()
     data = Dataloader(temp_filename)
     result = data.load_from_file()
     assert result == {}
 
 
-def test_load_from_file_invalid_input(temp_file_factory):
+def test_load_from_file_invalid_input(temp_file_factory) -> None:
     temp_filename = temp_file_factory("invalid_data\n")
     data = Dataloader(temp_filename)
     with pytest.raises(ValueError):
         data.load_from_file()
 
 
-def test_count_participants(temp_file_factory, sample_data):
+def test_count_participants(temp_file_factory, sample_data) -> None:
     temp_filename = temp_file_factory(sample_data + "3\tattr5,attr6\tdesired5,desired6\n")
     data = Dataloader(temp_filename)
     result = data.count_participants()
