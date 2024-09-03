@@ -67,5 +67,3 @@ def test_run_early_stop(algorithm):
     solution = algorithm.run(generations=1000, max_iterations_without_improvement=5)
     assert isinstance(solution, dict)
     assert len(solution) == 4
-
-# brak test_mutate() :(

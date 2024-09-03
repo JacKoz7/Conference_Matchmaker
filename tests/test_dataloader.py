@@ -26,10 +26,18 @@ def sample_data() -> str:
     return "1\tattr1,attr2\tdesired1,desired2\n2\tattr3,attr4\tdesired3,desired4\n"
 
 
-def test_load_from_file(temp_file_factory, sample_data) -> None:
-    temp_filename = temp_file_factory(sample_data)
-    data = Dataloader(temp_filename)
-    result = data.load_from_file()
+@pytest.fixture
+def temp_filename(temp_file_factory, sample_data):
+    return temp_file_factory(sample_data)
+
+
+@pytest.fixture
+def data_instance(temp_filename):
+    return Dataloader(temp_filename)
+
+
+def test_load_from_file(temp_file_factory, sample_data, data_instance) -> None:
+    result = data_instance.load_from_file()
 
     expected = {
         1: {"attributes": ["attr1", "attr2"], "desired": ["desired1", "desired2"]},
@@ -52,11 +60,9 @@ def test_load_from_file_invalid_input(temp_file_factory) -> None:
         data.load_from_file()
 
 
-def test_count_participants(temp_file_factory, sample_data) -> None:
-    temp_filename = temp_file_factory(sample_data + "3\tattr5,attr6\tdesired5,desired6\n")
-    data = Dataloader(temp_filename)
-    result = data.count_participants()
-    assert result == 3
+def test_count_participants(data_instance) -> None:
+    result = data_instance.count_participants()
+    assert result == 2
 
 
 def test_count_participants_empty(temp_file_factory):
