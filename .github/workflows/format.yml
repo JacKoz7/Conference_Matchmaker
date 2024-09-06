@@ -1,4 +1,4 @@
-name: Run tests
+name: Ruff check and format
 
 on:
   push:
